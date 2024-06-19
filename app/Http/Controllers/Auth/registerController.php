@@ -16,18 +16,19 @@ class registerController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required',
-            'password' => 'required|confirmed'
+            'phone_number' => 'required',
+            'pin' => 'required|confirmed'
         ]);
 
         $user = User::create([
-            'fullname' => $request->fullname,
             'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password) 
+            'username' => $request->username,
+            'phone_number' => $request->phone_number,
+            'pin' => $request->pin 
         ]);
 
         return response()->json([
+            'data' => $user,
             'message' => 'registrasi Berhasil'
         ]);
     }

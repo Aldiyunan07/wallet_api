@@ -11,13 +11,28 @@ class LoginController extends Controller
     public function __invoke(Request $request)
     {
         $request->validate([
-            'email' => 'required',
-            'password' => 'required'
+            'phone_number' => 'required',
+            'pin' => 'required'
         ]);
+        $credentials = $request->only('phone_number', 'pin');
 
-        if (!$token = auth()->attempt($request->only('email','password'))) {
+        $user = User::where('phone_number', $credentials['phone_number'])->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Phone number tidak terdaftar'], 404);
+        }
+
+        // Jika pin tidak sesuai
+        if ($user->pin !== $credentials['pin']) {
+            return response()->json(['message' => 'Pin salah'], 401);
+        }
+
+        if (!$user || $user->pin !== $credentials['pin']) {
             return response(null, 401);
         }
+
+        $token = auth()->login($user);
+
 
         return response()->json([
             'token' => $token,

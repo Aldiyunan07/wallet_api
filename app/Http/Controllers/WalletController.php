@@ -6,63 +6,34 @@ use Illuminate\Http\Request;
 
 class WalletController extends Controller
 {
-    public function index(){
-        if (auth()->user()->wallet) {
-            $data = auth()->user()->wallet;
-        }else{
-            $data = null;
-        }
-
+    public function index()
+    {
+        $data = auth()->user()->balance;
         return response()->json([
             'data' => $data
         ]);
     }
 
-    public function store(Request $request){
-        $request->validate([
-            'phone_number' => 'required',
-            'pin' => 'required|confirmed'
-        ]);
-
-        $data = auth()->user()->wallet()->updateOrCreate([
-                    'phone_number' => $request->phone_number
-                ],[
-                    'pin' => $request->pin,
-                    'balance' => 0
-                ]);
-        return response()->json([
-            'data' => $data,
-            'message' => 'Nomor Wallet Berhasil dibuat'
-        ]);
-    }
-
-    public function updatePin(Request $request){
+    public function updatePin(Request $request)
+    {
         $request->validate([
             'old_pin' => 'required|string',
             'pin' => 'required|string|min:6|confirmed',
         ]);
-        $wallet = auth()->user()->wallet;
 
-        if ($wallet) {
-            if ($wallet->pin !== $request->old_pin) {
-                return response()->json([
-                    'message' => 'Pin lama salah'
-                ], 400);
-            }
+        $user = auth()->user();
 
-            $wallet->pin = $request->pin;
-            $wallet->save();
-
+        if ($user->pin !== $request->old_pin) {
             return response()->json([
-                'message' => 'PIN Berhasil di update'
-            ], 200);
+                'message' => 'Pin lama salah'
+            ], 400);
         }
-    }
 
-    public function delete(){
-        auth()->user()->wallet->delete();
+        $user->pin = $request->pin;
+        $user->save();
+
         return response()->json([
-            'message' => 'Wallet Berhasil di hapus'
+            'message' => 'PIN Berhasil di update'
         ], 200);
     }
 }

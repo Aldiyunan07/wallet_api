@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('receiver_id');
             $table->integer('amount');
 
-            $table->foreign('sender_id')->references('id')->on('wallets')->onDelete('cascade');
-            $table->foreign('receiver_id')->references('id')->on('wallets')->onDelete('cascade');
+            $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

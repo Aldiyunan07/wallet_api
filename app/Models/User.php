@@ -16,9 +16,13 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'fullname',
-        'password',
+        'photo',
+        'phone_number',
+        'pin',
+        'username'
     ];
+
+    protected $appends = ['balance','formatted','outbalance','inbalance'];
 
     protected $hidden = [
         'password',
@@ -40,7 +44,41 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function wallet(){
-        return $this->hasOne(Wallet::class);
+    // Attribute
+    public function getBalanceAttribute(){
+        $transaction = $this->transactions->sum('amount');
+        $mySender = Transfer::where('sender_id', $this->id)->sum('amount');
+        $myReceiver = Transfer::where('receiver_id', $this->id)->sum('amount');
+        return $transaction + ($mySender + $myReceiver);
     }
+
+    public function getOutBalanceAttribute(){
+        $transaction = $this->transactions->where('type','withdraw')->sum('amount');
+        $mySender = Transfer::where('sender_id', $this->id)->sum('amount');
+        return $transaction + $mySender;
+    }
+    
+    public function getInBalanceAttribute(){
+        $transaction = $this->transactions->where('type','topup')->sum('amount');
+        $mySender = Transfer::where('receiver_id', $this->id)->sum('amount');
+        return $transaction + $mySender;
+    }
+
+    public function getFormattedAttribute(){
+        return number_format($this->balance, 0, '','.');
+    }
+
+    // Relation 
+    public function transactions(){
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function sentTransfers(){
+        return $this->hasMany(Transfer::class);
+    }
+
+    public function receiveTransfers(){
+        return $this->hasMany(Transfer::class);
+    }
+
 }

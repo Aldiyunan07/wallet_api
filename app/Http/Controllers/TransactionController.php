@@ -8,7 +8,7 @@ class TransactionController extends Controller
 {
 
     public function history(){
-        $transaction = auth()->user()->wallet->transaction;
+        $transaction = auth()->user()->transactions;
         return response()->json([
             'data' => $transaction
         ]); 
@@ -16,28 +16,19 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        $wallet = auth()->user()->wallet;
-        if ($wallet) {
+        $user = auth()->user();
+        if ($user) {
             $request->validate([
                 'amount' => 'required|numeric',
                 'type' => 'required|string|in:topup,withdraw',
                 'status' => 'required|string|in:success'
             ]);
 
-            $data = $wallet->transaction()->create([
+            $data = $user->transactions()->create([
                 'amount' => $request->amount,
                 'type' => $request->type,
                 'status' => $request->status
             ]);
-
-            if ($request->status == 'success') {
-                if ($request->type == "topup") {
-                    $wallet->balance += $request->amount;
-                } else if ($request->type == "withdraw") {
-                    $wallet->balance -= $request->amount;
-                }
-                $wallet->save();
-            }
 
             return response()->json([
                 'data' => $data
