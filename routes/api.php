@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function(){
   Route::get('/users',[MainController::class,'listUser']);
   Route::get('/user/{user}',[MainController::class,'userDetail']);
   Route::get('/me', [MainController::class,'me']);
+  Route::get('/transfer/history',[TransferController::class,'history']);
 
   Route::prefix('wallet')->group(function(){
     Route::get('/my-balance',[WalletController::class,'index']);
@@ -30,9 +31,8 @@ Route::middleware('auth:api')->group(function(){
   });
 
   Route::prefix('transfer')->group(function(){
-    Route::get('/{transfer}',[TransferController::class,'detail']);
     Route::post('/',[TransferController::class,'store']);
+    Route::get('/{transfer}',[TransferController::class,'detail']);
     Route::post('/confirmation/{transfer}',[TransferController::class,'confirmation']);
-    Route::get('/history',[TransferController::class,'history']);
   });
 });

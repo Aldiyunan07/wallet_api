@@ -11,7 +11,7 @@ class TransferController extends Controller
 {
 
     public function history(){
-        $transfer = Transfer::where('sender_id', auth()->user()->id)->get();
+        $transfer = Transfer::where('sender_id', auth()->user()->id)->with(['receiver'])->orderBy('created_at','desc')->get();
         return response()->json([
             'data' => $transfer,
         ]);
