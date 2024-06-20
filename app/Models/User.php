@@ -65,7 +65,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function getFormattedAttribute(){
-        return number_format($this->balance, 0, '','.');
+        return number_format(($this->inbalance - $this->outbalance), 0, '','.');
     }
 
     // Relation 
