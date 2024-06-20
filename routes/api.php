@@ -30,6 +30,7 @@ Route::middleware('auth:api')->group(function(){
   });
 
   Route::prefix('transfer')->group(function(){
+    Route::get('/{transfer}',[TransferController::class,'detail']);
     Route::post('/',[TransferController::class,'store']);
     Route::post('/confirmation/{transfer}',[TransferController::class,'confirmation']);
     Route::get('/history',[TransferController::class,'history']);

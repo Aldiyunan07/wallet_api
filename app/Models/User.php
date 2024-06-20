@@ -46,21 +46,21 @@ class User extends Authenticatable implements JWTSubject
 
     // Attribute
     public function getBalanceAttribute(){
-        $transaction = $this->transactions->sum('amount');
-        $mySender = Transfer::where('sender_id', $this->id)->sum('amount');
-        $myReceiver = Transfer::where('receiver_id', $this->id)->sum('amount');
+        $transaction = $this->transactions->where('status','success')->sum('amount');
+        $mySender = Transfer::where('sender_id', $this->id)->where('status', 'success')->sum('amount');
+        $myReceiver = Transfer::where('receiver_id', $this->id)->where('status', 'success')->sum('amount');
         return $transaction + ($mySender + $myReceiver);
     }
 
     public function getOutBalanceAttribute(){
-        $transaction = $this->transactions->where('type','withdraw')->sum('amount');
-        $mySender = Transfer::where('sender_id', $this->id)->sum('amount');
+        $transaction = $this->transactions->where('type','withdraw')->where('status', 'success')->sum('amount');
+        $mySender = Transfer::where('sender_id', $this->id)->where('status', 'success')->sum('amount');
         return $transaction + $mySender;
-    }
+    }  
     
     public function getInBalanceAttribute(){
-        $transaction = $this->transactions->where('type','topup')->sum('amount');
-        $mySender = Transfer::where('receiver_id', $this->id)->sum('amount');
+        $transaction = $this->transactions->where('type','topup')->where('status', 'success')->sum('amount');
+        $mySender = Transfer::where('receiver_id', $this->id)->where('status', 'success')->sum('amount');
         return $transaction + $mySender;
     }
 

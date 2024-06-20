@@ -65,4 +65,10 @@ class TransferController extends Controller
         ]);
     }
     
+    public function detail(Transfer $transfer){
+        $transfer = Transfer::whereId($transfer->id)->with(['receiver'])->first();
+        return response()->json([
+            'data' => $transfer
+        ]);
+    }
 }
