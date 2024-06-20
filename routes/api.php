@@ -14,7 +14,10 @@ Route::post('/register', [registerController::class,'__invoke']);
 Route::get('/check',[CheckController::class,'__invoke']);
 Route::middleware('auth:api')->group(function(){
   Route::post('/logout', [LogoutController::class,'__invoke']);
+  Route::get('/users',[MainController::class,'listUser']);
+  Route::get('/user/{user}',[MainController::class,'userDetail']);
   Route::get('/me', [MainController::class,'me']);
+
   Route::prefix('wallet')->group(function(){
     Route::get('/my-balance',[WalletController::class,'index']);
     Route::post('/update-pin',[WalletController::class,'updatePin']);
@@ -28,6 +31,7 @@ Route::middleware('auth:api')->group(function(){
 
   Route::prefix('transfer')->group(function(){
     Route::post('/',[TransferController::class,'store']);
+    Route::post('/confirmation/{transfer}',[TransferController::class,'confirmation']);
     Route::get('/history',[TransferController::class,'history']);
   });
 });

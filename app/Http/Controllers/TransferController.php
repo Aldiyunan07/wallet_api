@@ -20,11 +20,9 @@ class TransferController extends Controller
     public function store(Request $request){
         $user = auth()->user();
         $request->validate([
-            'phone_number' => 'required|exists:users,phone_number',
+            'user_id' => 'required|exists:users,id',
             'amount' => 'required',
         ]);
-
-        $receiver = User::where('phone_number',$request->phone_number)->first();
 
         if ($request->phone_number === $user->phone_number) {
             return response()->json([
@@ -38,14 +36,33 @@ class TransferController extends Controller
             }else{
                 $transfer = Transfer::create([
                     'sender_id' => $user->id,
-                    'receiver_id' => $receiver->id,
-                    'amount' => $request->amount
+                    'receiver_id' => $request->user_id,
+                    'amount' => $request->amount,
+                    'status' => 'pending'
                 ]);
                 return response()->json([
                     'data' => $transfer,
-                    'message' => 'Transfer Saldo Berhasil'
                 ]);
             }
         }
     }
+
+    public function confirmation(Transfer $transfer, Request $request){
+        $request->validate([
+            'pin' => 'required'
+        ]);
+        if ($request->pin !== auth()->user()->pin) {
+            return response()->json([
+                'message' => 'Pin salah'
+            ]); 
+        }
+        $transfer->update([
+            'status' => 'success'
+        ]);
+        return response()->json([
+            'data' => $transfer,
+            'message' => 'Transfer berhasil'
+        ]);
+    }
+    
 }

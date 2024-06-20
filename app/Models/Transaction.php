@@ -16,17 +16,25 @@ class Transaction extends Model
         'status'
     ];
 
-    protected $appends = ['date','time'];
+    protected $appends = ['date', 'time','formatted'];
 
-    public function user(){
-        return $this->belongsTo(User::class,'user_id');
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getDateAttribute(){
+    public function getDateAttribute()
+    {
         return $this->created_at->format('d, F Y');
     }
 
-    public function getTimeAttribute(){
+    public function getTimeAttribute()
+    {
         return $this->created_at->format('H:i');
+    }
+
+    public function getFormattedAttribute()
+    {
+        return number_format(($this->amount), 0, '', '.');
     }
 }
