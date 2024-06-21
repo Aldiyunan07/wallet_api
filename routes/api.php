@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function(){
   
   Route::prefix('transaction')->group(function(){
     Route::post('/',[TransactionController::class,'store']);
+    Route::post('/withdraw',[TransactionController::class,'withdraw']);
     Route::get('/{transaction}',[TransactionController::class,'detail']);
     Route::post('/confirmation/{transaction}',[TransactionController::class,'confirmation']);
 

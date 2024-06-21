@@ -37,6 +37,27 @@ class TransactionController extends Controller
             'data' => $data
         ]);
     }
+    
+    public function withdraw(Request $request)
+    {
+        $user = auth()->user();
+        $request->validate([
+            'amount' => 'required|numeric',
+            'paymentMethod' => 'required',
+        ]);
+
+        $data = $user->transactions()->create([
+            'amount' => $request->amount,
+            'paymentMethod' => $request->paymentMethod,
+            'paymentNumber' => null,
+            'type' => $request->type,
+            'status' => 'pending'
+        ]);
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 
     public function confirmation(Transaction $transaction, Request $request)
     {
