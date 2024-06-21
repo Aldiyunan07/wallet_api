@@ -18,6 +18,7 @@ Route::middleware('auth:api')->group(function(){
   Route::get('/user/{user}',[MainController::class,'userDetail']);
   Route::get('/me', [MainController::class,'me']);
   Route::get('/transfer/history',[TransferController::class,'history']);
+  Route::get('/transaction/history', [TransactionController::class, 'history']);
 
   Route::prefix('wallet')->group(function(){
     Route::get('/my-balance',[WalletController::class,'index']);
@@ -26,7 +27,8 @@ Route::middleware('auth:api')->group(function(){
   
   Route::prefix('transaction')->group(function(){
     Route::post('/',[TransactionController::class,'store']);
-    Route::get('/history', [TransactionController::class, 'history']);
+    Route::get('/{transaction}',[TransactionController::class,'detail']);
+    Route::post('/confirmation/{transaction}',[TransactionController::class,'confirmation']);
 
   });
 

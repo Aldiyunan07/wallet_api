@@ -13,7 +13,9 @@ class Transaction extends Model
         'user_id',
         'amount',
         'type',
-        'status'
+        'status',
+        'paymentMethod',
+        'paymentNumber'
     ];
 
     protected $appends = ['date', 'time','formatted'];
