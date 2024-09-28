@@ -14,6 +14,8 @@ class CheckController extends Controller
 
     public function __invoke(Request $request)
     {
-        return $request->user()->name;
+        return response()->json([
+            'data' => $request->user()->name
+        ]);
     }
 }
